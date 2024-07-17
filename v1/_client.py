@@ -1,8 +1,8 @@
 import grpc
-import book_catalog_pb2
+import protos.book_catalog_pb2 as book_catalog_pb2
 import book_catalog_pb2_grpc
-import order_management_pb2
-import order_management_pb2_grpc
+import protos.order_management_pb2 as order_management_pb2
+import protos.order_management_pb2_grpc as order_management_pb2_grpc
 import user_authentication_pb2
 import user_authentication_pb2_grpc
 

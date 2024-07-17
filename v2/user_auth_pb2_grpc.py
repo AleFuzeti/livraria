@@ -3,7 +3,7 @@
 import grpc
 import warnings
 
-import book_catalog_pb2 as book__catalog__pb2
+import user_auth_pb2 as user__auth__pb2
 
 GRPC_GENERATED_VERSION = '1.65.0'
 GRPC_VERSION = grpc.__version__
@@ -20,7 +20,7 @@ except ImportError:
 if _version_not_supported:
     warnings.warn(
         f'The grpc package installed is at version {GRPC_VERSION},'
-        + f' but the generated code in book_catalog_pb2_grpc.py depends on'
+        + f' but the generated code in user_auth_pb2_grpc.py depends on'
         + f' grpcio>={GRPC_GENERATED_VERSION}.'
         + f' Please upgrade your grpc module to grpcio>={GRPC_GENERATED_VERSION}'
         + f' or downgrade your generated code using grpcio-tools<={GRPC_VERSION}.'
@@ -30,7 +30,7 @@ if _version_not_supported:
     )
 
 
-class BookCatalogStub(object):
+class UserAuthStub(object):
     """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
@@ -39,59 +39,59 @@ class BookCatalogStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.GetBookInfo = channel.unary_unary(
-                '/bookstore.BookCatalog/GetBookInfo',
-                request_serializer=book__catalog__pb2.BookRequest.SerializeToString,
-                response_deserializer=book__catalog__pb2.BookResponse.FromString,
+        self.RegisterUser = channel.unary_unary(
+                '/protos.UserAuth/RegisterUser',
+                request_serializer=user__auth__pb2.RegisterUserRequest.SerializeToString,
+                response_deserializer=user__auth__pb2.AuthResponse.FromString,
                 _registered_method=True)
-        self.ListBooks = channel.unary_unary(
-                '/bookstore.BookCatalog/ListBooks',
-                request_serializer=book__catalog__pb2.Empty.SerializeToString,
-                response_deserializer=book__catalog__pb2.BookList.FromString,
+        self.LoginUser = channel.unary_unary(
+                '/protos.UserAuth/LoginUser',
+                request_serializer=user__auth__pb2.LoginUserRequest.SerializeToString,
+                response_deserializer=user__auth__pb2.AuthResponse.FromString,
                 _registered_method=True)
 
 
-class BookCatalogServicer(object):
+class UserAuthServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def GetBookInfo(self, request, context):
+    def RegisterUser(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def ListBooks(self, request, context):
+    def LoginUser(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
 
-def add_BookCatalogServicer_to_server(servicer, server):
+def add_UserAuthServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'GetBookInfo': grpc.unary_unary_rpc_method_handler(
-                    servicer.GetBookInfo,
-                    request_deserializer=book__catalog__pb2.BookRequest.FromString,
-                    response_serializer=book__catalog__pb2.BookResponse.SerializeToString,
+            'RegisterUser': grpc.unary_unary_rpc_method_handler(
+                    servicer.RegisterUser,
+                    request_deserializer=user__auth__pb2.RegisterUserRequest.FromString,
+                    response_serializer=user__auth__pb2.AuthResponse.SerializeToString,
             ),
-            'ListBooks': grpc.unary_unary_rpc_method_handler(
-                    servicer.ListBooks,
-                    request_deserializer=book__catalog__pb2.Empty.FromString,
-                    response_serializer=book__catalog__pb2.BookList.SerializeToString,
+            'LoginUser': grpc.unary_unary_rpc_method_handler(
+                    servicer.LoginUser,
+                    request_deserializer=user__auth__pb2.LoginUserRequest.FromString,
+                    response_serializer=user__auth__pb2.AuthResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'bookstore.BookCatalog', rpc_method_handlers)
+            'protos.UserAuth', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers('bookstore.BookCatalog', rpc_method_handlers)
+    server.add_registered_method_handlers('protos.UserAuth', rpc_method_handlers)
 
 
  # This class is part of an EXPERIMENTAL API.
-class BookCatalog(object):
+class UserAuth(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def GetBookInfo(request,
+    def RegisterUser(request,
             target,
             options=(),
             channel_credentials=None,
@@ -104,9 +104,9 @@ class BookCatalog(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/bookstore.BookCatalog/GetBookInfo',
-            book__catalog__pb2.BookRequest.SerializeToString,
-            book__catalog__pb2.BookResponse.FromString,
+            '/protos.UserAuth/RegisterUser',
+            user__auth__pb2.RegisterUserRequest.SerializeToString,
+            user__auth__pb2.AuthResponse.FromString,
             options,
             channel_credentials,
             insecure,
@@ -118,7 +118,7 @@ class BookCatalog(object):
             _registered_method=True)
 
     @staticmethod
-    def ListBooks(request,
+    def LoginUser(request,
             target,
             options=(),
             channel_credentials=None,
@@ -131,9 +131,9 @@ class BookCatalog(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/bookstore.BookCatalog/ListBooks',
-            book__catalog__pb2.Empty.SerializeToString,
-            book__catalog__pb2.BookList.FromString,
+            '/protos.UserAuth/LoginUser',
+            user__auth__pb2.LoginUserRequest.SerializeToString,
+            user__auth__pb2.AuthResponse.FromString,
             options,
             channel_credentials,
             insecure,

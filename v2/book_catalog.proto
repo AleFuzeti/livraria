@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package protos;
+
+service BookCatalog {
+    rpc GetBookInfo (BookRequest) returns (BookResponse);
+    rpc ListBooks (Empty) returns (BookList);
+}
+
+message BookRequest {
+    string title = 1;
+}
+
+message BookResponse {
+    string title = 1;
+    string author = 2;
+    int32 year = 3;
+    int32 stock = 4;
+    float price = 5;
+}
+
+message Empty {}
+
+message BookList {
+    repeated BookResponse books = 1;
+}

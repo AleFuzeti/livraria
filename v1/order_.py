@@ -1,7 +1,7 @@
 from concurrent import futures
 import grpc
-import order_management_pb2
-import order_management_pb2_grpc
+import protos.order_management_pb2 as order_management_pb2
+import protos.order_management_pb2_grpc as order_management_pb2_grpc
 import uuid
 from datetime import datetime
 

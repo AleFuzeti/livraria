@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package user_auth;
+
+service UserAuth {
+    rpc RegisterUser (UserCredentials) returns (AuthResponse);
+    rpc LoginUser (UserCredentials) returns (AuthResponse);
+}
+
+message UserCredentials {
+    string username = 1;
+    string password = 2;
+}
+
+message AuthResponse {
+    string token = 1;
+    string user_id = 2; 
+}

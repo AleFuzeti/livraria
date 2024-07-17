@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package protos;
+
+service OrderManagement {
+    rpc PlaceOrder (OrderRequest) returns (OrderResponse);
+    rpc GetOrderDetails (OrderID) returns (OrderDetails);
+    rpc GetOrderHistory (UserRequest) returns (OrderHistory);
+}
+
+message OrderRequest {
+    string title = 1;
+    int32 quantity = 2;
+    string user_id = 3;
+}
+
+message OrderResponse {
+    string order_id = 1;
+}
+
+message OrderID {
+    string order_id = 1;
+}
+
+message OrderDetails {
+    string order_id = 1;
+    string title = 2;
+    int32 quantity = 3;
+    string date = 4;
+}
+
+message UserRequest {
+    string user_id = 1;
+}
+
+message OrderHistory {
+    repeated string titles = 1;
+}

@@ -1,6 +1,6 @@
 from concurrent import futures
 import grpc
-import book_catalog_pb2
+import protos.book_catalog_pb2 as book_catalog_pb2
 import book_catalog_pb2_grpc
 
 class BookCatalogServicer(book_catalog_pb2_grpc.BookCatalogServicer):
