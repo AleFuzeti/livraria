@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Livraria</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Livraria</h1>
+
+    <h2>Registro</h2>
+    <form id="registerForm">
+        <label for="registerUsername">Username:</label>
+        <input type="text" id="registerUsername" name="username"><br>
+        <label for="registerPassword">Password:</label>
+        <input type="password" id="registerPassword" name="password"><br>
+        <button type="button" onclick="register()">Register</button>
+    </form>
+    <div id="registerResult"></div>
+
+    <h2>Login</h2>
+    <form id="loginForm">
+        <label for="loginUsername">Username:</label>
+        <input type="text" id="loginUsername" name="username"><br>
+        <label for="loginPassword">Password:</label>
+        <input type="password" id="loginPassword" name="password"><br>
+        <button type="button" onclick="login()">Login</button>
+    </form>
+    <div id="loginResult"></div>
+
+    <script>
+        function register() {
+            $.ajax({
+                url: '/register',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    username: $('#registerUsername').val(),
+                    password: $('#registerPassword').val()
+                }),
+                success: function(response) {
+                    $('#registerResult').text('Token: ' + response.token);
+                },
+                error: function(xhr, status, error) {
+                    var errorMessage = JSON.parse(xhr.responseText).error;
+                    $('#registerResult').text('Registration failed: ' + errorMessage);
+                }
+            });
+        }
+
+        function login() {
+            $.ajax({
+                url: '/login',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    username: $('#loginUsername').val(),
+                    password: $('#loginPassword').val()
+                }),
+                success: function(response) {
+                    if (response.token) {
+                        window.location.href = '/main.html';
+                    } else {
+                        $('#loginResult').text('Login failed: Invalid credentials');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    var errorMessage = JSON.parse(xhr.responseText).error;
+                    $('#loginResult').text('Login failed: ' + errorMessage);
+                }
+            });
+        }
+    </script>
+</body>
+</html>

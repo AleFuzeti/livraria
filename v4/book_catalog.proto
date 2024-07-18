@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package bookcatalog;
+
+service BookCatalog {
+  rpc GetBookInfo (BookRequest) returns (BookInfoResponse);
+}
+
+message BookRequest {
+  string title = 1;
+}
+
+message BookInfoResponse {
+  string title = 1;
+  string author = 2;
+  int32 year = 3;
+  int32 stock = 4;
+  float price = 5;
+}

@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package order_management;
+
+service OrderManagement {
+  rpc PlaceOrder (OrderRequest) returns (OrderResponse);
+  rpc GetOrderDetails (OrderIdRequest) returns (OrderDetailsResponse);
+  rpc GetOrderHistory (UserRequest) returns (OrderHistoryResponse);
+}
+
+message OrderRequest {
+  string title = 1;
+  int32 quantity = 2;
+  string user_id = 3;
+}
+
+message OrderResponse {
+  string order_id = 1;
+}
+
+message OrderIdRequest {
+  string order_id = 1;
+}
+
+message OrderDetailsResponse {
+  string title = 1;
+  int32 quantity = 2;
+  string order_date = 3;
+  double total_price = 4;
+  string user_id = 5; 
+}
+
+message UserRequest {
+  string user_id = 1;
+}
+
+message OrderHistoryResponse {
+  repeated string titles = 1;
+}
