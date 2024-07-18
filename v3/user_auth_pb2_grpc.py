@@ -5,10 +5,10 @@ import warnings
 
 import user_auth_pb2 as user__auth__pb2
 
-GRPC_GENERATED_VERSION = '1.65.0'
+GRPC_GENERATED_VERSION = '1.65.1'
 GRPC_VERSION = grpc.__version__
-EXPECTED_ERROR_RELEASE = '1.65.0'
-SCHEDULED_RELEASE_DATE = 'June 25, 2024'
+EXPECTED_ERROR_RELEASE = '1.66.0'
+SCHEDULED_RELEASE_DATE = 'August 6, 2024'
 _version_not_supported = False
 
 try:
@@ -40,12 +40,12 @@ class UserAuthStub(object):
             channel: A grpc.Channel.
         """
         self.RegisterUser = channel.unary_unary(
-                '/userauth.UserAuth/RegisterUser',
+                '/user_auth.UserAuth/RegisterUser',
                 request_serializer=user__auth__pb2.UserCredentials.SerializeToString,
                 response_deserializer=user__auth__pb2.AuthResponse.FromString,
                 _registered_method=True)
         self.LoginUser = channel.unary_unary(
-                '/userauth.UserAuth/LoginUser',
+                '/user_auth.UserAuth/LoginUser',
                 request_serializer=user__auth__pb2.UserCredentials.SerializeToString,
                 response_deserializer=user__auth__pb2.AuthResponse.FromString,
                 _registered_method=True)
@@ -81,9 +81,9 @@ def add_UserAuthServicer_to_server(servicer, server):
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'userauth.UserAuth', rpc_method_handlers)
+            'user_auth.UserAuth', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers('userauth.UserAuth', rpc_method_handlers)
+    server.add_registered_method_handlers('user_auth.UserAuth', rpc_method_handlers)
 
 
  # This class is part of an EXPERIMENTAL API.
@@ -104,7 +104,7 @@ class UserAuth(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/userauth.UserAuth/RegisterUser',
+            '/user_auth.UserAuth/RegisterUser',
             user__auth__pb2.UserCredentials.SerializeToString,
             user__auth__pb2.AuthResponse.FromString,
             options,
@@ -131,7 +131,7 @@ class UserAuth(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/userauth.UserAuth/LoginUser',
+            '/user_auth.UserAuth/LoginUser',
             user__auth__pb2.UserCredentials.SerializeToString,
             user__auth__pb2.AuthResponse.FromString,
             options,

@@ -28,42 +28,6 @@
     </form>
     <div id="loginResult"></div>
 
-    <h2>Consulta de Livros</h2>
-    <form id="booksForm">
-        <label for="bookTitle">Título:</label>
-        <input type="text" id="bookTitle" name="title"><br>
-        <button type="button" onclick="getBookInfo()">Buscar Livro</button>
-    </form>
-    <div id="bookResult"></div>
-
-    <h2>Realização de Pedidos</h2>
-    <form id="orderForm">
-        <label for="orderTitle">Título do Livro:</label>
-        <input type="text" id="orderTitle" name="title"><br>
-        <label for="orderQuantity">Quantidade:</label>
-        <input type="number" id="orderQuantity" name="quantity"><br>
-        <label for="orderUserId">ID do Usuário:</label>
-        <input type="text" id="orderUserId" name="user_id"><br>
-        <button type="button" onclick="createOrder()">Fazer Pedido</button>
-    </form>
-    <div id="orderResult"></div>
-
-    <h2>Detalhes do Pedido</h2>
-    <form id="orderDetailsForm">
-        <label for="orderId">ID do Pedido:</label>
-        <input type="text" id="orderId" name="order_id"><br>
-        <button type="button" onclick="getOrderDetails()">Ver Detalhes</button>
-    </form>
-    <div id="orderDetailsResult"></div>
-
-    <h2>Histórico de Pedidos</h2>
-    <form id="orderHistoryForm">
-        <label for="historyUserId">ID do Usuário:</label>
-        <input type="text" id="historyUserId" name="user_id"><br>
-        <button type="button" onclick="getOrderHistory()">Ver Histórico</button>
-    </form>
-    <div id="orderHistoryResult"></div>
-
     <script>
         function register() {
             $.ajax({
@@ -94,93 +58,11 @@
                     password: $('#loginPassword').val()
                 }),
                 success: function(response) {
-                    $('#loginResult').text('Token: ' + response.token);
+                    window.location.href = '/main.html';
                 },
                 error: function(xhr, status, error) {
                     var errorMessage = JSON.parse(xhr.responseText).error;
                     $('#loginResult').text('Login failed: ' + errorMessage);
-                }
-            });
-        }
-
-        function getBookInfo() {
-            $.ajax({
-                url: '/books',
-                type: 'GET',
-                data: {
-                    title: $('#bookTitle').val()
-                },
-                success: function(response) {
-                    if (response.error) {
-                        $('#bookResult').text('Error: ' + response.error);
-                    } else {
-                        $('#bookResult').html(
-                            'Title: ' + response.title + '<br>' +
-                            'Author: ' + response.author + '<br>' +
-                            'Year: ' + response.year + '<br>' +
-                            'Stock: ' + response.stock + '<br>' +
-                            'Price: ' + response.price
-                        );
-                    }
-                },
-                error: function(xhr, status, error) {
-                    var errorMessage = JSON.parse(xhr.responseText).error;
-                    $('#bookResult').text('Search failed: ' + errorMessage);
-                }
-            });
-        }
-
-        function createOrder() {
-            $.ajax({
-                url: '/order',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({
-                    title: $('#orderTitle').val(),
-                    quantity: $('#orderQuantity').val(),
-                    user_id: $('#orderUserId').val()
-                }),
-                success: function(response) {
-                    $('#orderResult').text('Order ID: ' + response.order_id);
-                },
-                error: function(xhr, status, error) {
-                    var errorMessage = JSON.parse(xhr.responseText).error;
-                    $('#orderResult').text('Order creation failed: ' + errorMessage);
-                }
-            });
-        }
-
-        function getOrderDetails() {
-            $.ajax({
-                url: '/order/' + $('#orderId').val(),
-                type: 'GET',
-                success: function(response) {
-                    $('#orderDetailsResult').html(
-                        'Title: ' + response.title + '<br>' +
-                        'Quantity: ' + response.quantity + '<br>' +
-                        'Order Date: ' + response.order_date
-                    );
-                },
-                error: function(xhr, status, error) {
-                    var errorMessage = JSON.parse(xhr.responseText).error;
-                    $('#orderDetailsResult').text('Failed to get order details: ' + errorMessage);
-                }
-            });
-        }
-
-        function getOrderHistory() {
-            $.ajax({
-                url: '/order/history',
-                type: 'GET',
-                data: {
-                    user_id: $('#historyUserId').val()
-                },
-                success: function(response) {
-                    $('#orderHistoryResult').text('Titles: ' + response.titles.join(', '));
-                },
-                error: function(xhr, status, error) {
-                    var errorMessage = JSON.parse(xhr.responseText).error;
-                    $('#orderHistoryResult').text('Failed to get order history: ' + errorMessage);
                 }
             });
         }

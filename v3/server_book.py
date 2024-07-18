@@ -6,8 +6,8 @@ import book_catalog_pb2_grpc
 class BookCatalogServicer(book_catalog_pb2_grpc.BookCatalogServicer):
     def __init__(self):
         self.books = {
-            "Book1": {"title": "Book1", "author": "Author1", "year": 2001, "stock": 10, "price": 29.99},
-            # Adicione outros livros aqui
+            "Book1": {"title": "Book1", "author": "Author1", "year": 2001, "stock": 10, "price": 30.00},
+            
         }
 
     def GetBookInfo(self, request, context):

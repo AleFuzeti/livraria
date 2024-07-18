@@ -1,0 +1,3 @@
+/v3/venv
+/v3/__pycache__
+*.pyc

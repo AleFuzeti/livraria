@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, session, render_template
+from flask import Flask, request, jsonify, session, render_template, redirect, url_for
 import grpc
 import book_catalog_pb2
 import book_catalog_pb2_grpc
@@ -40,19 +40,23 @@ def login():
         response = user_auth_stub.LoginUser(user_auth_pb2.UserCredentials(username=data['username'], password=data['password']))
         if response.token:
             session['token'] = response.token
+            session['user_id'] = data['username']  # Assuming username is the user_id
             return jsonify({"token": response.token})
         else:
             return jsonify({"error": "Invalid credentials"}), 401
     except grpc.RpcError as e:
         return jsonify({"error": f"Login failed: {e.details()}"}), 400
-
+ 
+@app.route('/main.html')
+def main():
+    return render_template('main.html')
 
 @app.route('/books', methods=['GET'])
 def get_books():
     title = request.args.get('title')
     try:
         response = book_catalog_stub.GetBookInfo(book_catalog_pb2.BookRequest(title=title))
-        if response.title:  
+        if response.title:
             return jsonify({
                 "title": response.title,
                 "author": response.author,
@@ -68,8 +72,34 @@ def get_books():
 @app.route('/order', methods=['POST'])
 def place_order():
     data = request.json
-    response = order_management_stub.PlaceOrder(order_management_pb2.OrderRequest(title=data['title'], quantity=data['quantity'], user_id=data['user_id']))
-    return jsonify({"order_id": response.order_id})
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"error": "User not logged in"}), 401
+
+    try:
+        quantity = int(data['quantity'])  # Converter quantidade para inteiro
+
+        # Primeiro, obter o preço do livro
+        book_response = book_catalog_stub.GetBookInfo(book_catalog_pb2.BookRequest(title=data['title']))
+        if not book_response.title:
+            return jsonify({"error": "Book not found"}), 404
+
+        # Calcular o preço total
+        total_price = book_response.price * quantity
+
+        # Fazer o pedido
+        order_response = order_management_stub.PlaceOrder(
+            order_management_pb2.OrderRequest(title=data['title'], quantity=quantity, user_id=user_id)
+        )
+
+        return jsonify({
+            "order_id": order_response.order_id,
+            "total_price": total_price  # Adiciona o preço total na resposta
+        })
+    except ValueError:
+        return jsonify({"error": "Quantity must be an integer"}), 400
+    except grpc.RpcError as e:
+        return jsonify({"error": f"Failed to place order: {e.details()}"}), 500
 
 @app.route('/order/<order_id>', methods=['GET'])
 def get_order_details(order_id):
@@ -78,9 +108,13 @@ def get_order_details(order_id):
 
 @app.route('/order/history', methods=['GET'])
 def get_order_history():
-    user_id = request.args.get('user_id')
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"error": "User not logged in"}), 401
+
     response = order_management_stub.GetOrderHistory(order_management_pb2.UserRequest(user_id=user_id))
-    return jsonify({"titles": response.titles})
+    titles_list = list(response.titles)
+    return jsonify({"titles": titles_list})
 
 if __name__ == '__main__':
     app.run(port=8080, debug=True)

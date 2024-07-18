@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package ordermanagement;
+package order_management;
 
 service OrderManagement {
   rpc PlaceOrder (OrderRequest) returns (OrderResponse);
@@ -26,6 +26,7 @@ message OrderDetailsResponse {
   string title = 1;
   int32 quantity = 2;
   string order_date = 3;
+  double total_price = 4;
 }
 
 message UserRequest {

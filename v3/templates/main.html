@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Main</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h2>Consulta de Livros</h2>
+    <form id="booksForm">
+        <label for="bookTitle">Título:</label>
+        <input type="text" id="bookTitle" name="title"><br>
+        <button type="button" onclick="getBookInfo()">Buscar Livro</button>
+    </form>
+    <div id="bookResult"></div>
+
+    <h2>Realização de Pedidos</h2>
+    <form id="orderForm">
+        <label for="orderTitle">Título do Livro:</label>
+        <input type="text" id="orderTitle" name="title"><br>
+        <label for="orderQuantity">Quantidade:</label>
+        <input type="number" id="orderQuantity" name="quantity"><br>
+        <button type="button" onclick="createOrder()">Fazer Pedido</button>
+    </form>
+    <div id="orderResult"></div>
+
+    <h2>Detalhes do Pedido</h2>
+    <form id="orderDetailsForm">
+        <label for="orderId">ID do Pedido:</label>
+        <input type="text" id="orderId" name="order_id"><br>
+        <button type="button" onclick="getOrderDetails()">Ver Detalhes</button>
+    </form>
+    <div id="orderDetailsResult"></div>
+
+    <h2>Histórico de Pedidos</h2>
+    <form id="orderHistoryForm">
+        <button type="button" onclick="getOrderHistory()">Ver Histórico</button>
+    </form>
+    <div id="orderHistoryResult"></div>
+
+    <script>
+        function getBookInfo() {
+            $.ajax({
+                url: '/books',
+                type: 'GET',
+                data: { title: $('#bookTitle').val() },
+                success: function(response) {
+                    $('#bookResult').html(`
+                        <p>Título: ${response.title}</p>
+                        <p>Autor: ${response.author}</p>
+                        <p>Ano: ${response.year}</p>
+                        <p>Estoque: ${response.stock}</p>
+                        <p>Preço: ${response.price}</p>
+                    `);
+                },
+                error: function(xhr, status, error) {
+                    var errorMessage = JSON.parse(xhr.responseText).error;
+                    $('#bookResult').text(errorMessage);
+                }
+            });
+        }
+
+        function createOrder() {
+            $.ajax({
+                url: '/order',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    title: $('#orderTitle').val(),
+                    quantity: parseInt($('#orderQuantity').val())  // Converter quantidade para inteiro
+                }),
+                success: function(response) {
+                    $('#orderResult').html(`
+                        <p>Order ID: ${response.order_id}</p>
+                        <p>Preço Total: ${response.total_price}</p> <!-- Adiciona o preço total -->
+                    `);
+                    // Atualiza a informação do livro após o pedido
+                    getBookInfo();
+                },
+                error: function(xhr, status, error) {
+                    var errorMessage = JSON.parse(xhr.responseText).error;
+                    $('#orderResult').text(errorMessage);
+                }
+            });
+        }
+        function getOrderDetails() {
+            $.ajax({
+                url: '/order/' + $('#orderId').val(),
+                type: 'GET',
+                success: function(response) {
+                    $('#orderDetailsResult').html(`
+                        <p>Título: ${response.title}</p>
+                        <p>Quantidade: ${response.quantity}</p>
+                        <p>Data do Pedido: ${response.order_date}</p>
+                    `);
+                }
+            });
+        }
+
+        function getOrderHistory() {
+            $.ajax({
+                url: '/order/history',
+                type: 'GET',
+                success: function(response) {
+                    $('#orderHistoryResult').html(response.titles.map(title => `<p>${title}</p>`).join(''));
+                }
+            });
+        }
+    </script>
+</body>
+</html>

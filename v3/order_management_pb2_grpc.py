@@ -5,10 +5,10 @@ import warnings
 
 import order_management_pb2 as order__management__pb2
 
-GRPC_GENERATED_VERSION = '1.65.0'
+GRPC_GENERATED_VERSION = '1.65.1'
 GRPC_VERSION = grpc.__version__
-EXPECTED_ERROR_RELEASE = '1.65.0'
-SCHEDULED_RELEASE_DATE = 'June 25, 2024'
+EXPECTED_ERROR_RELEASE = '1.66.0'
+SCHEDULED_RELEASE_DATE = 'August 6, 2024'
 _version_not_supported = False
 
 try:
@@ -40,17 +40,17 @@ class OrderManagementStub(object):
             channel: A grpc.Channel.
         """
         self.PlaceOrder = channel.unary_unary(
-                '/ordermanagement.OrderManagement/PlaceOrder',
+                '/order_management.OrderManagement/PlaceOrder',
                 request_serializer=order__management__pb2.OrderRequest.SerializeToString,
                 response_deserializer=order__management__pb2.OrderResponse.FromString,
                 _registered_method=True)
         self.GetOrderDetails = channel.unary_unary(
-                '/ordermanagement.OrderManagement/GetOrderDetails',
+                '/order_management.OrderManagement/GetOrderDetails',
                 request_serializer=order__management__pb2.OrderIdRequest.SerializeToString,
                 response_deserializer=order__management__pb2.OrderDetailsResponse.FromString,
                 _registered_method=True)
         self.GetOrderHistory = channel.unary_unary(
-                '/ordermanagement.OrderManagement/GetOrderHistory',
+                '/order_management.OrderManagement/GetOrderHistory',
                 request_serializer=order__management__pb2.UserRequest.SerializeToString,
                 response_deserializer=order__management__pb2.OrderHistoryResponse.FromString,
                 _registered_method=True)
@@ -97,9 +97,9 @@ def add_OrderManagementServicer_to_server(servicer, server):
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'ordermanagement.OrderManagement', rpc_method_handlers)
+            'order_management.OrderManagement', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers('ordermanagement.OrderManagement', rpc_method_handlers)
+    server.add_registered_method_handlers('order_management.OrderManagement', rpc_method_handlers)
 
 
  # This class is part of an EXPERIMENTAL API.
@@ -120,7 +120,7 @@ class OrderManagement(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/ordermanagement.OrderManagement/PlaceOrder',
+            '/order_management.OrderManagement/PlaceOrder',
             order__management__pb2.OrderRequest.SerializeToString,
             order__management__pb2.OrderResponse.FromString,
             options,
@@ -147,7 +147,7 @@ class OrderManagement(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/ordermanagement.OrderManagement/GetOrderDetails',
+            '/order_management.OrderManagement/GetOrderDetails',
             order__management__pb2.OrderIdRequest.SerializeToString,
             order__management__pb2.OrderDetailsResponse.FromString,
             options,
@@ -174,7 +174,7 @@ class OrderManagement(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/ordermanagement.OrderManagement/GetOrderHistory',
+            '/order_management.OrderManagement/GetOrderHistory',
             order__management__pb2.UserRequest.SerializeToString,
             order__management__pb2.OrderHistoryResponse.FromString,
             options,
