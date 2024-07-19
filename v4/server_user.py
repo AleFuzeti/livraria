@@ -3,6 +3,7 @@ import grpc
 import user_auth_pb2
 import user_auth_pb2_grpc
 import hashlib
+from singleton import Singleton  # Importe o Singleton
 
 class UserAuthServicer(user_auth_pb2_grpc.UserAuthServicer, Singleton):
     def __init__(self):

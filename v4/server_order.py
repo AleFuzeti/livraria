@@ -6,6 +6,7 @@ import uuid
 from datetime import datetime
 import book_catalog_pb2
 import book_catalog_pb2_grpc
+from singleton import Singleton
 
 class OrderManagementServicer(order_management_pb2_grpc.OrderManagementServicer, Singleton):
     def __init__(self, book_catalog_stub):
@@ -16,7 +17,6 @@ class OrderManagementServicer(order_management_pb2_grpc.OrderManagementServicer,
             self.initialized = True
 
     def PlaceOrder(self, request, context):
-        # Verificar estoque
         book_request = book_catalog_pb2.BookRequest(title=request.title)
         try:
             book_info = self.book_catalog_stub.GetBookInfo(book_request)
@@ -24,18 +24,13 @@ class OrderManagementServicer(order_management_pb2_grpc.OrderManagementServicer,
             context.set_code(grpc.StatusCode.UNAVAILABLE)
             context.set_details(f'Failed to contact book catalog: {e.details()}')
             return order_management_pb2.OrderResponse()
-        
+
         if book_info.stock < request.quantity:
             context.set_code(grpc.StatusCode.FAILED_PRECONDITION)
             context.set_details('Not enough stock')
             return order_management_pb2.OrderResponse()
-        
-        # Atualizar estoque
-        #new_stock = book_info.stock - request.quantity
-        
-        # Calcular preço total
-        total_price = book_info.price * request.quantity
 
+        total_price = book_info.price * request.quantity
         order_id = str(uuid.uuid4())
         self.orders[order_id] = {
             "title": request.title,
@@ -46,7 +41,7 @@ class OrderManagementServicer(order_management_pb2_grpc.OrderManagementServicer,
         if request.user_id not in self.history:
             self.history[request.user_id] = []
         self.history[request.user_id].append(request.title)
-        
+
         return order_management_pb2.OrderResponse(order_id=order_id)
 
     def GetOrderDetails(self, request, context):
@@ -74,4 +69,3 @@ def serve():
 
 if __name__ == '__main__':
     serve()
-

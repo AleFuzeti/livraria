@@ -2,12 +2,15 @@ from concurrent import futures
 import grpc
 import book_catalog_pb2
 import book_catalog_pb2_grpc
+from singleton import Singleton  # Importe o Singleton
 
 class BookCatalogServicer(book_catalog_pb2_grpc.BookCatalogServicer, Singleton):
     def __init__(self):
         if not hasattr(self, 'initialized'):
             self.books = {
-                "Book1": {"title": "Book1", "author": "Author1", "year": 2001, "stock": 10, "price": 30.00},
+                "HarryPotter": {"title": "HarryPotter", "author": "JK Rowling", "year": 1998, "stock": 50, "price": 50.00},
+                "PercyJackson": {"title": "PercyJackson", "author": "Rick Riordan", "year": 2011, "stock": 30, "price": 30.00},
+                "PequenoPrincipe": {"title": "PequenoPrincipe", "author": "Antoine de Saint-Exupéry", "year": 1943, "stock": 20, "price": 20.00},
             }
             self.initialized = True
 
