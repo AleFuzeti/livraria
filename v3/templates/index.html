@@ -58,7 +58,11 @@
                     password: $('#loginPassword').val()
                 }),
                 success: function(response) {
-                    window.location.href = '/main.html';
+                    if (response.token) {
+                        window.location.href = '/main.html';
+                    } else {
+                        $('#loginResult').text('Login failed: Invalid credentials');
+                    }
                 },
                 error: function(xhr, status, error) {
                     var errorMessage = JSON.parse(xhr.responseText).error;

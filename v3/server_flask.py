@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, session, render_template, redirect, url_for
+from flask import Flask, request, jsonify, session, render_template
 import grpc
 import book_catalog_pb2
 import book_catalog_pb2_grpc
@@ -10,15 +10,24 @@ import user_auth_pb2_grpc
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
-# Conexão com os serviços gRPC
-book_catalog_channel = grpc.insecure_channel('localhost:50051')
-book_catalog_stub = book_catalog_pb2_grpc.BookCatalogStub(book_catalog_channel)
+# Funções para obter stubs singleton
+def get_book_catalog_stub():
+    if not hasattr(get_book_catalog_stub, "_stub"):
+        book_catalog_channel = grpc.insecure_channel('localhost:50051')
+        get_book_catalog_stub._stub = book_catalog_pb2_grpc.BookCatalogStub(book_catalog_channel)
+    return get_book_catalog_stub._stub
 
-order_management_channel = grpc.insecure_channel('localhost:50052')
-order_management_stub = order_management_pb2_grpc.OrderManagementStub(order_management_channel)
+def get_order_management_stub():
+    if not hasattr(get_order_management_stub, "_stub"):
+        order_management_channel = grpc.insecure_channel('localhost:50052')
+        get_order_management_stub._stub = order_management_pb2_grpc.OrderManagementStub(order_management_channel)
+    return get_order_management_stub._stub
 
-user_auth_channel = grpc.insecure_channel('localhost:50053')
-user_auth_stub = user_auth_pb2_grpc.UserAuthStub(user_auth_channel)
+def get_user_auth_stub():
+    if not hasattr(get_user_auth_stub, "_stub"):
+        user_auth_channel = grpc.insecure_channel('localhost:50053')
+        get_user_auth_stub._stub = user_auth_pb2_grpc.UserAuthStub(user_auth_channel)
+    return get_user_auth_stub._stub
 
 @app.route('/')
 def index():
@@ -27,8 +36,9 @@ def index():
 @app.route('/register', methods=['POST'])
 def register():
     data = request.json
+    stub = get_user_auth_stub()
     try:
-        response = user_auth_stub.RegisterUser(user_auth_pb2.UserCredentials(username=data['username'], password=data['password']))
+        response = stub.RegisterUser(user_auth_pb2.UserCredentials(username=data['username'], password=data['password']))
         return jsonify({"token": response.token})
     except grpc.RpcError as e:
         return jsonify({"error": f"Registration failed: {e.details()}"}), 400
@@ -36,8 +46,9 @@ def register():
 @app.route('/login', methods=['POST'])
 def login():
     data = request.json
+    stub = get_user_auth_stub()
     try:
-        response = user_auth_stub.LoginUser(user_auth_pb2.UserCredentials(username=data['username'], password=data['password']))
+        response = stub.LoginUser(user_auth_pb2.UserCredentials(username=data['username'], password=data['password']))
         if response.token:
             session['token'] = response.token
             session['user_id'] = data['username']  # Assuming username is the user_id
@@ -46,7 +57,7 @@ def login():
             return jsonify({"error": "Invalid credentials"}), 401
     except grpc.RpcError as e:
         return jsonify({"error": f"Login failed: {e.details()}"}), 400
- 
+
 @app.route('/main.html')
 def main():
     return render_template('main.html')
@@ -54,8 +65,9 @@ def main():
 @app.route('/books', methods=['GET'])
 def get_books():
     title = request.args.get('title')
+    stub = get_book_catalog_stub()
     try:
-        response = book_catalog_stub.GetBookInfo(book_catalog_pb2.BookRequest(title=title))
+        response = stub.GetBookInfo(book_catalog_pb2.BookRequest(title=title))
         if response.title:
             return jsonify({
                 "title": response.title,
@@ -76,11 +88,13 @@ def place_order():
     if not user_id:
         return jsonify({"error": "User not logged in"}), 401
 
+    book_stub = get_book_catalog_stub()
+    order_stub = get_order_management_stub()
     try:
         quantity = int(data['quantity'])  # Converter quantidade para inteiro
 
         # Primeiro, obter o preço do livro
-        book_response = book_catalog_stub.GetBookInfo(book_catalog_pb2.BookRequest(title=data['title']))
+        book_response = book_stub.GetBookInfo(book_catalog_pb2.BookRequest(title=data['title']))
         if not book_response.title:
             return jsonify({"error": "Book not found"}), 404
 
@@ -88,7 +102,7 @@ def place_order():
         total_price = book_response.price * quantity
 
         # Fazer o pedido
-        order_response = order_management_stub.PlaceOrder(
+        order_response = order_stub.PlaceOrder(
             order_management_pb2.OrderRequest(title=data['title'], quantity=quantity, user_id=user_id)
         )
 
@@ -103,8 +117,17 @@ def place_order():
 
 @app.route('/order/<order_id>', methods=['GET'])
 def get_order_details(order_id):
-    response = order_management_stub.GetOrderDetails(order_management_pb2.OrderIdRequest(order_id=order_id))
-    return jsonify({"title": response.title, "quantity": response.quantity, "order_date": response.order_date})
+    stub = get_order_management_stub()
+    try:
+        response = stub.GetOrderDetails(order_management_pb2.OrderIdRequest(order_id=order_id))
+        return jsonify({
+            "title": response.title,
+            "quantity": response.quantity,
+            "order_date": response.order_date,
+            "total_price": response.total_price
+        })
+    except grpc.RpcError as e:
+        return jsonify({"error": f"Failed to retrieve order details: {e.details()}"}), 500
 
 @app.route('/order/history', methods=['GET'])
 def get_order_history():
@@ -112,9 +135,13 @@ def get_order_history():
     if not user_id:
         return jsonify({"error": "User not logged in"}), 401
 
-    response = order_management_stub.GetOrderHistory(order_management_pb2.UserRequest(user_id=user_id))
-    titles_list = list(response.titles)
-    return jsonify({"titles": titles_list})
+    stub = get_order_management_stub()
+    try:
+        response = stub.GetOrderHistory(order_management_pb2.UserRequest(user_id=user_id))
+        titles_list = list(response.titles)
+        return jsonify({"titles": titles_list})
+    except grpc.RpcError as e:
+        return jsonify({"error": f"Failed to retrieve order history: {e.details()}"}), 500
 
 if __name__ == '__main__':
     app.run(port=8080, debug=True)

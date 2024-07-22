@@ -3,12 +3,13 @@ import grpc
 import book_catalog_pb2
 import book_catalog_pb2_grpc
 
-class BookCatalogServicer(book_catalog_pb2_grpc.BookCatalogServicer):
+class BookCatalogServicer(book_catalog_pb2_grpc.BookCatalogServicer, Singleton):
     def __init__(self):
-        self.books = {
-            "Book1": {"title": "Book1", "author": "Author1", "year": 2001, "stock": 10, "price": 30.00},
-            
-        }
+        if not hasattr(self, 'initialized'):
+            self.books = {
+                "Book1": {"title": "Book1", "author": "Author1", "year": 2001, "stock": 10, "price": 30.00},
+            }
+            self.initialized = True
 
     def GetBookInfo(self, request, context):
         book = self.books.get(request.title)

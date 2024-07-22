@@ -4,9 +4,11 @@ import user_auth_pb2
 import user_auth_pb2_grpc
 import hashlib
 
-class UserAuthServicer(user_auth_pb2_grpc.UserAuthServicer):
+class UserAuthServicer(user_auth_pb2_grpc.UserAuthServicer, Singleton):
     def __init__(self):
-        self.users = {}
+        if not hasattr(self, 'initialized'):
+            self.users = {}
+            self.initialized = True
 
     def RegisterUser(self, request, context):
         if request.username in self.users:

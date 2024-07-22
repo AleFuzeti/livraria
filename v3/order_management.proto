@@ -27,6 +27,7 @@ message OrderDetailsResponse {
   int32 quantity = 2;
   string order_date = 3;
   double total_price = 4;
+  string user_id = 5; 
 }
 
 message UserRequest {

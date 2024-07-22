@@ -4,6 +4,7 @@ package bookcatalog;
 
 service BookCatalog {
   rpc GetBookInfo (BookRequest) returns (BookInfoResponse);
+  rpc UpdateBookStock (BookStockUpdateRequest) returns (BookStockUpdateResponse);
 }
 
 message BookRequest {
@@ -16,4 +17,13 @@ message BookInfoResponse {
   int32 year = 3;
   int32 stock = 4;
   float price = 5;
+}
+
+message BookStockUpdateRequest {
+  string title = 1;
+  int32 quantity = 2;
+}
+
+message BookStockUpdateResponse {
+  bool success = 1;
 }

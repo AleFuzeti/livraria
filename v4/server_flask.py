@@ -51,7 +51,7 @@ def login():
         response = stub.LoginUser(user_auth_pb2.UserCredentials(username=data['username'], password=data['password']))
         if response.token:
             session['token'] = response.token
-            session['user_id'] = data['username']  # Assuming username is the user_id
+            session['user_id'] = data['username']  
             return jsonify({"token": response.token})
         else:
             return jsonify({"error": "Invalid credentials"}), 401
@@ -98,13 +98,23 @@ def place_order():
         if not book_response.title:
             return jsonify({"error": "Book not found"}), 404
 
-        # Calcular o preço total
-        total_price = book_response.price * quantity
+        if book_response.stock < quantity:
+            return jsonify({"error": "Not enough stock"}), 400
 
         # Fazer o pedido
         order_response = order_stub.PlaceOrder(
             order_management_pb2.OrderRequest(title=data['title'], quantity=quantity, user_id=user_id)
         )
+
+        # COMENTEI PQ TAVA ATUALIZANDO DUAS VEZES
+        # Atualizar o estoque
+        #stock_update_request = book_catalog_pb2.BookStockUpdateRequest(title=data['title'], quantity=quantity)
+        #stock_update_response = book_stub.UpdateBookStock(stock_update_request)
+        #if not stock_update_response.success:
+        #    return jsonify({"error": "Failed to update book stock"}), 500
+
+        # Calcular o preço total
+        total_price = book_response.price * quantity
 
         return jsonify({
             "order_id": order_response.order_id,

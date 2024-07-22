@@ -7,11 +7,13 @@ from datetime import datetime
 import book_catalog_pb2
 import book_catalog_pb2_grpc
 
-class OrderManagementServicer(order_management_pb2_grpc.OrderManagementServicer):
+class OrderManagementServicer(order_management_pb2_grpc.OrderManagementServicer, Singleton):
     def __init__(self, book_catalog_stub):
-        self.orders = {}
-        self.history = {}
-        self.book_catalog_stub = book_catalog_stub
+        if not hasattr(self, 'initialized'):
+            self.orders = {}
+            self.history = {}
+            self.book_catalog_stub = book_catalog_stub
+            self.initialized = True
 
     def PlaceOrder(self, request, context):
         # Verificar estoque
@@ -28,21 +30,8 @@ class OrderManagementServicer(order_management_pb2_grpc.OrderManagementServicer)
             context.set_details('Not enough stock')
             return order_management_pb2.OrderResponse()
         
-        
         # Atualizar estoque
-        print(book_info.stock - request.quantity)
-        new_stock = book_info.stock - request.quantity
-        update_stock_request = book_catalog_pb2.UpdateStockRequest(title=request.title, new_stock=new_stock)
-        try:
-            update_response = self.book_catalog_stub.UpdateBookStock(update_stock_request)
-            if not update_response.success:
-                context.set_code(grpc.StatusCode.INTERNAL)
-                context.set_details('Failed to update book stock')
-                return order_management_pb2.OrderResponse()
-        except grpc.RpcError as e:
-            context.set_code(grpc.StatusCode.UNAVAILABLE)
-            context.set_details(f'Failed to contact book catalog: {e.details()}')
-            return order_management_pb2.OrderResponse()
+        #new_stock = book_info.stock - request.quantity
         
         # Calcular preço total
         total_price = book_info.price * request.quantity
@@ -85,3 +74,4 @@ def serve():
 
 if __name__ == '__main__':
     serve()
+

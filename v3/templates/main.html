@@ -72,7 +72,7 @@
                 success: function(response) {
                     $('#orderResult').html(`
                         <p>Order ID: ${response.order_id}</p>
-                        <p>Preço Total: ${response.total_price}</p> <!-- Adiciona o preço total -->
+                        <p>Preço Total: ${response.total_price}</p>
                     `);
                     // Atualiza a informação do livro após o pedido
                     getBookInfo();
@@ -83,6 +83,7 @@
                 }
             });
         }
+
         function getOrderDetails() {
             $.ajax({
                 url: '/order/' + $('#orderId').val(),
@@ -92,7 +93,12 @@
                         <p>Título: ${response.title}</p>
                         <p>Quantidade: ${response.quantity}</p>
                         <p>Data do Pedido: ${response.order_date}</p>
+                        <p>Preço Total: ${response.total_price}</p>
                     `);
+                },
+                error: function(xhr, status, error) {
+                    var errorMessage = JSON.parse(xhr.responseText).error;
+                    $('#orderDetailsResult').text('Failed to retrieve order details: ' + errorMessage);
                 }
             });
         }
@@ -103,6 +109,10 @@
                 type: 'GET',
                 success: function(response) {
                     $('#orderHistoryResult').html(response.titles.map(title => `<p>${title}</p>`).join(''));
+                },
+                error: function(xhr, status, error) {
+                    var errorMessage = JSON.parse(xhr.responseText).error;
+                    $('#orderHistoryResult').text('Failed to retrieve order history: ' + errorMessage);
                 }
             });
         }

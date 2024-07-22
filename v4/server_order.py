@@ -17,6 +17,11 @@ class OrderManagementServicer(order_management_pb2_grpc.OrderManagementServicer,
             self.initialized = True
 
     def PlaceOrder(self, request, context):
+        if request.quantity < 1:
+            context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
+            context.set_details('Quantity must be 1 or more')
+            return order_management_pb2.OrderResponse()
+        
         book_request = book_catalog_pb2.BookRequest(title=request.title)
         try:
             book_info = self.book_catalog_stub.GetBookInfo(book_request)
@@ -28,6 +33,19 @@ class OrderManagementServicer(order_management_pb2_grpc.OrderManagementServicer,
         if book_info.stock < request.quantity:
             context.set_code(grpc.StatusCode.FAILED_PRECONDITION)
             context.set_details('Not enough stock')
+            return order_management_pb2.OrderResponse()
+
+        # Atualizar o estoque
+        stock_update_request = book_catalog_pb2.BookStockUpdateRequest(title=request.title, quantity=request.quantity)
+        try:
+            stock_update_response = self.book_catalog_stub.UpdateBookStock(stock_update_request)
+            if not stock_update_response.success:
+                context.set_code(grpc.StatusCode.FAILED_PRECONDITION)
+                context.set_details('Failed to update book stock')
+                return order_management_pb2.OrderResponse()
+        except grpc.RpcError as e:
+            context.set_code(grpc.StatusCode.UNAVAILABLE)
+            context.set_details(f'Failed to update book stock: {e.details()}')
             return order_management_pb2.OrderResponse()
 
         total_price = book_info.price * request.quantity

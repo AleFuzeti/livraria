@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x12\x62ook_catalog.proto\x12\x0b\x62ookcatalog\"\x1c\n\x0b\x42ookRequest\x12\r\n\x05title\x18\x01 \x01(\t\"]\n\x10\x42ookInfoResponse\x12\r\n\x05title\x18\x01 \x01(\t\x12\x0e\n\x06\x61uthor\x18\x02 \x01(\t\x12\x0c\n\x04year\x18\x03 \x01(\x05\x12\r\n\x05stock\x18\x04 \x01(\x05\x12\r\n\x05price\x18\x05 \x01(\x02\x32U\n\x0b\x42ookCatalog\x12\x46\n\x0bGetBookInfo\x12\x18.bookcatalog.BookRequest\x1a\x1d.bookcatalog.BookInfoResponseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x12\x62ook_catalog.proto\x12\x0b\x62ookcatalog\"\x1c\n\x0b\x42ookRequest\x12\r\n\x05title\x18\x01 \x01(\t\"]\n\x10\x42ookInfoResponse\x12\r\n\x05title\x18\x01 \x01(\t\x12\x0e\n\x06\x61uthor\x18\x02 \x01(\t\x12\x0c\n\x04year\x18\x03 \x01(\x05\x12\r\n\x05stock\x18\x04 \x01(\x05\x12\r\n\x05price\x18\x05 \x01(\x02\"9\n\x16\x42ookStockUpdateRequest\x12\r\n\x05title\x18\x01 \x01(\t\x12\x10\n\x08quantity\x18\x02 \x01(\x05\"*\n\x17\x42ookStockUpdateResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x32\xb3\x01\n\x0b\x42ookCatalog\x12\x46\n\x0bGetBookInfo\x12\x18.bookcatalog.BookRequest\x1a\x1d.bookcatalog.BookInfoResponse\x12\\\n\x0fUpdateBookStock\x12#.bookcatalog.BookStockUpdateRequest\x1a$.bookcatalog.BookStockUpdateResponseb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -25,6 +25,10 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_BOOKREQUEST']._serialized_end=63
   _globals['_BOOKINFORESPONSE']._serialized_start=65
   _globals['_BOOKINFORESPONSE']._serialized_end=158
-  _globals['_BOOKCATALOG']._serialized_start=160
-  _globals['_BOOKCATALOG']._serialized_end=245
+  _globals['_BOOKSTOCKUPDATEREQUEST']._serialized_start=160
+  _globals['_BOOKSTOCKUPDATEREQUEST']._serialized_end=217
+  _globals['_BOOKSTOCKUPDATERESPONSE']._serialized_start=219
+  _globals['_BOOKSTOCKUPDATERESPONSE']._serialized_end=261
+  _globals['_BOOKCATALOG']._serialized_start=264
+  _globals['_BOOKCATALOG']._serialized_end=443
 # @@protoc_insertion_point(module_scope)

@@ -44,12 +44,23 @@ class BookCatalogStub(object):
                 request_serializer=book__catalog__pb2.BookRequest.SerializeToString,
                 response_deserializer=book__catalog__pb2.BookInfoResponse.FromString,
                 _registered_method=True)
+        self.UpdateBookStock = channel.unary_unary(
+                '/bookcatalog.BookCatalog/UpdateBookStock',
+                request_serializer=book__catalog__pb2.BookStockUpdateRequest.SerializeToString,
+                response_deserializer=book__catalog__pb2.BookStockUpdateResponse.FromString,
+                _registered_method=True)
 
 
 class BookCatalogServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def GetBookInfo(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def UpdateBookStock(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -62,6 +73,11 @@ def add_BookCatalogServicer_to_server(servicer, server):
                     servicer.GetBookInfo,
                     request_deserializer=book__catalog__pb2.BookRequest.FromString,
                     response_serializer=book__catalog__pb2.BookInfoResponse.SerializeToString,
+            ),
+            'UpdateBookStock': grpc.unary_unary_rpc_method_handler(
+                    servicer.UpdateBookStock,
+                    request_deserializer=book__catalog__pb2.BookStockUpdateRequest.FromString,
+                    response_serializer=book__catalog__pb2.BookStockUpdateResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -91,6 +107,33 @@ class BookCatalog(object):
             '/bookcatalog.BookCatalog/GetBookInfo',
             book__catalog__pb2.BookRequest.SerializeToString,
             book__catalog__pb2.BookInfoResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def UpdateBookStock(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/bookcatalog.BookCatalog/UpdateBookStock',
+            book__catalog__pb2.BookStockUpdateRequest.SerializeToString,
+            book__catalog__pb2.BookStockUpdateResponse.FromString,
             options,
             channel_credentials,
             insecure,

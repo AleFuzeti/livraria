@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x16order_management.proto\x12\x10order_management\"@\n\x0cOrderRequest\x12\r\n\x05title\x18\x01 \x01(\t\x12\x10\n\x08quantity\x18\x02 \x01(\x05\x12\x0f\n\x07user_id\x18\x03 \x01(\t\"!\n\rOrderResponse\x12\x10\n\x08order_id\x18\x01 \x01(\t\"\"\n\x0eOrderIdRequest\x12\x10\n\x08order_id\x18\x01 \x01(\t\"`\n\x14OrderDetailsResponse\x12\r\n\x05title\x18\x01 \x01(\t\x12\x10\n\x08quantity\x18\x02 \x01(\x05\x12\x12\n\norder_date\x18\x03 \x01(\t\x12\x13\n\x0btotal_price\x18\x04 \x01(\x01\"\x1e\n\x0bUserRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\"&\n\x14OrderHistoryResponse\x12\x0e\n\x06titles\x18\x01 \x03(\t2\x97\x02\n\x0fOrderManagement\x12M\n\nPlaceOrder\x12\x1e.order_management.OrderRequest\x1a\x1f.order_management.OrderResponse\x12[\n\x0fGetOrderDetails\x12 .order_management.OrderIdRequest\x1a&.order_management.OrderDetailsResponse\x12X\n\x0fGetOrderHistory\x12\x1d.order_management.UserRequest\x1a&.order_management.OrderHistoryResponseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x16order_management.proto\x12\x10order_management\"@\n\x0cOrderRequest\x12\r\n\x05title\x18\x01 \x01(\t\x12\x10\n\x08quantity\x18\x02 \x01(\x05\x12\x0f\n\x07user_id\x18\x03 \x01(\t\"!\n\rOrderResponse\x12\x10\n\x08order_id\x18\x01 \x01(\t\"\"\n\x0eOrderIdRequest\x12\x10\n\x08order_id\x18\x01 \x01(\t\"q\n\x14OrderDetailsResponse\x12\r\n\x05title\x18\x01 \x01(\t\x12\x10\n\x08quantity\x18\x02 \x01(\x05\x12\x12\n\norder_date\x18\x03 \x01(\t\x12\x13\n\x0btotal_price\x18\x04 \x01(\x01\x12\x0f\n\x07user_id\x18\x05 \x01(\t\"\x1e\n\x0bUserRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\"&\n\x14OrderHistoryResponse\x12\x0e\n\x06titles\x18\x01 \x03(\t2\x97\x02\n\x0fOrderManagement\x12M\n\nPlaceOrder\x12\x1e.order_management.OrderRequest\x1a\x1f.order_management.OrderResponse\x12[\n\x0fGetOrderDetails\x12 .order_management.OrderIdRequest\x1a&.order_management.OrderDetailsResponse\x12X\n\x0fGetOrderHistory\x12\x1d.order_management.UserRequest\x1a&.order_management.OrderHistoryResponseb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -28,11 +28,11 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_ORDERIDREQUEST']._serialized_start=145
   _globals['_ORDERIDREQUEST']._serialized_end=179
   _globals['_ORDERDETAILSRESPONSE']._serialized_start=181
-  _globals['_ORDERDETAILSRESPONSE']._serialized_end=277
-  _globals['_USERREQUEST']._serialized_start=279
-  _globals['_USERREQUEST']._serialized_end=309
-  _globals['_ORDERHISTORYRESPONSE']._serialized_start=311
-  _globals['_ORDERHISTORYRESPONSE']._serialized_end=349
-  _globals['_ORDERMANAGEMENT']._serialized_start=352
-  _globals['_ORDERMANAGEMENT']._serialized_end=631
+  _globals['_ORDERDETAILSRESPONSE']._serialized_end=294
+  _globals['_USERREQUEST']._serialized_start=296
+  _globals['_USERREQUEST']._serialized_end=326
+  _globals['_ORDERHISTORYRESPONSE']._serialized_start=328
+  _globals['_ORDERHISTORYRESPONSE']._serialized_end=366
+  _globals['_ORDERMANAGEMENT']._serialized_start=369
+  _globals['_ORDERMANAGEMENT']._serialized_end=648
 # @@protoc_insertion_point(module_scope)
